@@ -1,0 +1,11 @@
+# Binaries
+bus
+four-opencode-plugin-bus
+*.exe
+
+# Build artifacts
+dist/
+
+# Go
+*.test
+*.out
