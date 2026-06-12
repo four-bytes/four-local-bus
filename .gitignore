@@ -1,5 +1,6 @@
 # Binaries
-bus
+bus                    # legacy name
+four-opencode-bus      # current binary name
 four-opencode-plugin-bus
 *.exe
 

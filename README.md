@@ -23,7 +23,7 @@ TUI Components ──WebSocket──┘
 
 ```bash
 go install github.com/four-bytes/four-opencode-plugin-bus/cmd/bus@latest
-bus
+four-opencode-bus
 ```
 
 ## Protocol

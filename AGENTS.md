@@ -29,6 +29,6 @@ internal/
 ## Commands
 | Command | Description |
 |---------|-------------|
-| `go build ./cmd/bus/` | Build binary |
+| `go build -o four-opencode-bus ./cmd/bus/` | Build binary |
 | `go test ./...` | Run tests |
-| `go run ./cmd/bus/` | Run bus server |
+| `go run ./cmd/bus/` | Run four-opencode-bus server |
