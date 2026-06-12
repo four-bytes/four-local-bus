@@ -5,7 +5,7 @@ Go-based local message bus for opencode plugins. Single binary providing pub/sub
 
 ## Tech Stack
 - **Language:** Go 1.22+
-- **Dependencies:** stdlib only (net/http, net, encoding/json, sync)
+- **Dependencies:** stdlib + gorilla/websocket (WebSocket upgrade)
 - **Build:** CGO_ENABLED=0, static binary
 - **License:** Apache-2.0
 
