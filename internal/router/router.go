@@ -111,6 +111,13 @@ func (r *Router) Unsubscribe(conn *websocket.Conn) {
 	delete(r.connWriters, conn)
 }
 
+// SubscriberCount returns the number of unique WebSocket connections currently subscribed.
+func (r *Router) SubscriberCount() int {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+	return len(r.connPatterns)
+}
+
 // Publish delivers a message to all subscribers whose patterns match the channel.
 // The channel name is normalized (lowercase, trimmed).
 // If the channel does not exist yet, it is created.

@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/four-bytes/four-opencode-plugin-bus/internal/router"
@@ -23,6 +24,11 @@ var upgrader = websocket.Upgrader{
 type Server struct {
 	router    *router.Router
 	startTime time.Time
+
+	idleTimer *time.Timer
+	idleMu    sync.Mutex
+	idleDone  chan struct{} // closed when idle shutdown is triggered
+	closeOnce sync.Once     // ensures idleDone is closed only once
 }
 
 // New creates a Server with the given router.
@@ -30,7 +36,56 @@ func New(r *router.Router) *Server {
 	return &Server{
 		router:    r,
 		startTime: time.Now(),
+		idleDone:  make(chan struct{}),
 	}
+}
+
+// resetIdleTimer cancels the pending idle shutdown timer.
+// Called when a subscriber connects (new subscriber = bus is in use).
+func (s *Server) resetIdleTimer() {
+	s.idleMu.Lock()
+	defer s.idleMu.Unlock()
+
+	select {
+	case <-s.idleDone:
+		return // already shutting down
+	default:
+	}
+
+	if s.idleTimer != nil {
+		s.idleTimer.Stop()
+		s.idleTimer = nil
+	}
+}
+
+// startIdleTimer starts a 30-second countdown to idle shutdown.
+// Called when the last subscriber disconnects.
+// If a new subscriber connects before the timer fires, resetIdleTimer cancels it.
+func (s *Server) startIdleTimer() {
+	s.idleMu.Lock()
+	defer s.idleMu.Unlock()
+
+	select {
+	case <-s.idleDone:
+		return // already shutting down
+	default:
+	}
+
+	if s.idleTimer != nil {
+		s.idleTimer.Stop()
+	}
+
+	s.idleTimer = time.AfterFunc(30*time.Second, func() {
+		log.Println("[bus] idle timeout — no subscribers, shutting down")
+		s.closeOnce.Do(func() {
+			close(s.idleDone)
+		})
+	})
+}
+
+// IdleDone returns a channel that is closed when the idle shutdown timer fires.
+func (s *Server) IdleDone() <-chan struct{} {
+	return s.idleDone
 }
 
 // Handler returns the http.Handler with all routes registered.
@@ -101,11 +156,15 @@ func (s *Server) handleSubscribe(w http.ResponseWriter, r *http.Request) {
 	for _, pattern := range patterns {
 		s.router.Subscribe(pattern, conn)
 	}
+	s.resetIdleTimer()
 
 	// Read loop: bidirectional — incoming messages are published to the bus
 	go func() {
 		defer func() {
 			s.router.Unsubscribe(conn)
+			if s.router.SubscriberCount() == 0 {
+				s.startIdleTimer()
+			}
 			_ = conn.Close()
 		}()
 
@@ -129,6 +188,7 @@ func (s *Server) handleSubscribe(w http.ResponseWriter, r *http.Request) {
 						s.router.Subscribe(pattern, conn)
 					}
 				}
+				s.resetIdleTimer()
 				continue
 			}
 
