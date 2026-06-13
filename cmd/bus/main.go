@@ -38,7 +38,7 @@ func main() {
 		log.Printf("WARNING: failed to write discovery file: %v", err)
 	}
 
-	fmt.Printf("four-opencode-bus listening on port %d\n", port)
+	fmt.Printf("{\"port\":%d}\n", port)
 
 	// Graceful shutdown on SIGINT/SIGTERM or idle timeout
 	sigCh := make(chan os.Signal, 1)
