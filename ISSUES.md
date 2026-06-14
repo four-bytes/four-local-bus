@@ -14,28 +14,27 @@ the orphan runs indefinitely.
 
 **Location:** `internal/server/server.go` — `New()` constructor.
 
-**Fix:** Call `startIdleTimer()` immediately in `New()` with a longer grace period (60–120 s).
-When the first subscriber connects, `resetIdleTimer()` (already called on connect) cancels it.
-After that, the existing 30 s post-disconnect timer takes over.
-
-Parameterize `startIdleTimer` to accept a `time.Duration` so the startup grace period can
-differ from the post-disconnect timeout.
+**Fix:** Add a startup idle timer in `cmd/bus/main.go` that sleeps for a longer grace period
+(5 min) and then checks `HasEverHadSubscriber()`. If no subscriber has ever connected, the
+bus is an orphan from a lost race (see Issue #2) and shuts itself down via SIGTERM.
+The point-in-time `HasSubscribers()` would be racy (subscribers can briefly be zero between
+a disconnect and the 30 s post-disconnect idle timer firing), hence the dedicated
+`HasEverHadSubscriber()` flag in `internal/server/server.go`.
 
 ```go
-// New creates a Server with the given router.
-func New(r *router.Router) *Server {
-    s := &Server{
-        router:    r,
-        startTime: time.Now(),
-        idleDone:  make(chan struct{}),
+// In cmd/bus/main.go, after starting the server:
+go func() {
+    time.Sleep(5 * time.Minute)
+    if !srv.HasEverHadSubscriber() {
+        fmt.Println("four-local-bus: no subscribers after 5m, shutting down")
+        sigCh <- syscall.SIGTERM
     }
-    // Grace period: if no subscriber connects within 60 s, treat as orphan and shut down.
-    s.startIdleTimer(60 * time.Second)
-    return s
-}
+}()
 
-// startIdleTimer starts a countdown; callers pass the desired duration.
-func (s *Server) startIdleTimer(d time.Duration) { ... }
+// In internal/server/server.go:
+func (s *Server) HasEverHadSubscriber() bool {
+    // returns s.everHadSubscriber under s.subscriberMu
+}
 ```
 
 ---
