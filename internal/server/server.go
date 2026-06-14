@@ -10,7 +10,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/four-bytes/four-opencode-plugin-bus/internal/router"
+	"github.com/four-bytes/four-local-bus/internal/router"
 	"github.com/gorilla/websocket"
 )
 

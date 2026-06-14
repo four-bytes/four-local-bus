@@ -1,4 +1,4 @@
-# four-opencode-plugin-bus
+# four-local-bus
 
 Go-based local message bus for [opencode](https://github.com/sst/opencode) plugins. Provides universal IPC (Inter-Process Communication) between server-side plugins and TUI components — bidirectional pub/sub over HTTP + WebSocket.
 
@@ -22,8 +22,8 @@ TUI Components ──WebSocket──┘
 ## Quick Start
 
 ```bash
-go install github.com/four-bytes/four-opencode-plugin-bus/cmd/bus@latest
-four-opencode-bus
+go install github.com/four-bytes/four-local-bus/cmd/bus@latest
+four-local-bus
 ```
 
 ## Protocol

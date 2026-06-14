@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * four-opencode-bus — Fallback Demo
+ * four-local-bus — Fallback Demo
  *
  * Demonstrates:
  * 1. Normal pub/sub operation
@@ -13,7 +13,7 @@ import { join } from "node:path";
 import { homedir } from "node:os";
 import { existsSync, readFileSync } from "node:fs";
 
-const BUS_BIN = join(homedir(), ".local", "bin", "four-opencode-bus");
+const BUS_BIN = join(homedir(), ".local", "bin", "four-local-bus");
 const PROJECT_ROOT = join(import.meta.dir, "..");
 const PORT_FILE = join(homedir(), ".cache", "opencode", "plugin-bus", "port.json");
 
@@ -40,7 +40,7 @@ async function healthCheck(): Promise<boolean> {
 
 async function main() {
   console.log("╔══════════════════════════════════════╗");
-  console.log("║  four-opencode-bus — Fallback Demo  ║");
+  console.log("║  four-local-bus — Fallback Demo  ║");
   console.log("╚══════════════════════════════════════╝\n");
 
   // ── Scenario 1: Bus Working ──────────────────────────

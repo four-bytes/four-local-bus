@@ -9,9 +9,9 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/four-bytes/four-opencode-plugin-bus/internal/discovery"
-	"github.com/four-bytes/four-opencode-plugin-bus/internal/router"
-	"github.com/four-bytes/four-opencode-plugin-bus/internal/server"
+	"github.com/four-bytes/four-local-bus/internal/discovery"
+	"github.com/four-bytes/four-local-bus/internal/router"
+	"github.com/four-bytes/four-local-bus/internal/server"
 )
 
 func main() {

@@ -7,13 +7,13 @@ import { spawn } from "bun";
 import { BusClient } from "../../four-opencode-plugin-lib/src/bus-client.js";
 import { BusTui } from "../../four-opencode-plugin-lib/src/bus-tui.js";
 
-const BUS_BIN = `${process.env.HOME}/.local/bin/four-opencode-bus`;
+const BUS_BIN = `${process.env.HOME}/.local/bin/four-local-bus`;
 
 async function demo() {
   console.log("🔌 Plugin Bus Demo\n");
 
   // Clean stale state
-  await spawn(["pkill", "-f", ".local/bin/four-opencode-bus"]).exited.catch(() => {});
+  await spawn(["pkill", "-f", ".local/bin/four-local-bus"]).exited.catch(() => {});
   const rmResult = await spawn(["rm", "-f", `${process.env.HOME}/.cache/opencode/plugin-bus/port.json`]).exited;
   await new Promise((r) => setTimeout(r, 500));
 

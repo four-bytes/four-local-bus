@@ -1,4 +1,4 @@
-module github.com/four-bytes/four-opencode-plugin-bus
+module github.com/four-bytes/four-local-bus
 
 go 1.22
 

@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/four-bytes/four-opencode-plugin-bus/internal/channel"
+	"github.com/four-bytes/four-local-bus/internal/channel"
 	"github.com/gorilla/websocket"
 )
 

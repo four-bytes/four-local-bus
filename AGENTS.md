@@ -1,4 +1,4 @@
-# AGENTS.md — four-opencode-plugin-bus
+# AGENTS.md — four-local-bus
 
 ## Project
 Go-based local message bus for opencode plugins. Single binary providing pub/sub IPC between server plugins and TUI components via HTTP + WebSocket.
@@ -29,6 +29,6 @@ internal/
 ## Commands
 | Command | Description |
 |---------|-------------|
-| `go build -o four-opencode-bus ./cmd/bus/` | Build binary |
+| `go build -o four-local-bus ./cmd/bus/` | Build binary |
 | `go test ./...` | Run tests |
-| `go run ./cmd/bus/` | Run four-opencode-bus server |
+| `go run ./cmd/bus/` | Run four-local-bus server |
