@@ -210,13 +210,17 @@ func (s *Server) handleSubscribe(w http.ResponseWriter, r *http.Request) {
 			if err := json.Unmarshal(message, &subMsg); err == nil && subMsg.Subscribe != "" {
 				// Re-subscribe: drop all existing subscriptions, then subscribe to new patterns
 				s.router.Unsubscribe(conn)
+				hadSubscriptions := false
 				for _, pattern := range strings.Split(subMsg.Subscribe, ",") {
 					pattern = strings.TrimSpace(pattern)
 					if pattern != "" {
 						s.router.Subscribe(pattern, conn)
+						hadSubscriptions = true
 					}
 				}
-				s.markEverHadSubscriber() // also sticky on in-loop resubscribe
+				if hadSubscriptions {
+					s.markEverHadSubscriber() // also sticky on in-loop resubscribe
+				}
 				s.resetIdleTimer()
 				continue
 			}
