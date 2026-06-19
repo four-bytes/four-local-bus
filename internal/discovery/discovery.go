@@ -1,3 +1,7 @@
+// Deprecated: discovery package is no longer used. The bus now listens on a fixed
+// port (4099, fallback 4098) instead of a random port with file-based discovery.
+// This file is kept for reference but is not imported by the current bus binary.
+
 package discovery
 
 import (
