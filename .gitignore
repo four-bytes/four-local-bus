@@ -1,7 +1,7 @@
 # Binaries
-bus                    # legacy name
-four-opencode-plugin-bus
-four-local-bus         # current binary name
+/bus
+/four-opencode-plugin-bus
+/four-local-bus
 *.exe
 
 # Build artifacts
